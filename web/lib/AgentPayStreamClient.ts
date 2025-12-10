@@ -113,3 +113,24 @@ export async function withdrawFromStream(
   return pendingTxn.hash;
 }
 
+/**
+ * Cancel a stream (only sender can cancel)
+ */
+export async function cancelStream(
+  account: Account,
+  streamId: U64
+): Promise<string> {
+  const transaction = await aptosClient.transaction.build.simple({
+    sender: account.accountAddress,
+    data: {
+      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::cancel_stream`,
+      functionArguments: [streamId],
+    },
+  });
+
+  const pendingTxn = await aptosClient.signAndSubmitTransaction({ signer: account, transaction });
+  await aptosClient.waitForTransaction({ transactionHash: pendingTxn.hash });
+  
+  return pendingTxn.hash;
+}
+

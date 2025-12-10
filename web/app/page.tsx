@@ -1,90 +1,62 @@
 'use client';
 
 import { usePrivy } from '@privy-io/react-auth';
-import { useState, useEffect } from 'react';
-import { Account } from '@aptos-labs/ts-sdk';
-import { aptosClient } from '@/lib/aptosClient';
+import CreateStreamForm from '@/components/CreateStreamForm';
+import StreamDashboard from '@/components/StreamDashboard';
+import WalletConnectPanel from '@/components/WalletConnectPanel';
+import { AlertTriangle } from 'lucide-react';
 
 export default function Home() {
-  const { ready, authenticated, login, logout, user } = usePrivy();
-  const [aptosAccount, setAptosAccount] = useState<Account | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Initialize Aptos account from Privy wallet when authenticated
-    if (authenticated && user?.wallet) {
-      // Note: Privy wallet integration with Aptos requires additional setup
-      // This is a placeholder for the wallet connection logic
-      console.log('User authenticated:', user);
-    }
-  }, [authenticated, user]);
+  const { ready } = usePrivy();
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[#12121F]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3B82F6] mx-auto"></div>
+          <p className="mt-4 text-[#E0E0E0]">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <div className="max-w-4xl w-full">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          AgentPay Stream
-        </h1>
-        <p className="text-center text-gray-600 mb-8">
-          Decentralized micro-streaming payments on Movement L1
-        </p>
+    <div className="min-h-screen bg-[#12121F] py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Wallet Connection Panel */}
+        <WalletConnectPanel />
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          {!authenticated ? (
-            <div className="text-center">
-              <p className="mb-4 text-gray-700">
-                Connect your wallet to start streaming payments
+        {/* Contract Status Warning */}
+        {!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS && (
+          <div className="bg-[#DC2626]/20 border-l-4 border-[#00E0A3] rounded-lg p-4 flex items-start space-x-3">
+            <AlertTriangle className="w-5 h-5 text-[#00E0A3] flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-[#E0E0E0] mb-1">
+                Contract Not Deployed
               </p>
-              <button
-                onClick={login}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-              >
-                Connect Wallet
-              </button>
+              <p className="text-sm text-[#A0A0A0]">
+                Set <span className="font-mono text-[#00E0A3]">NEXT_PUBLIC_CONTRACT_ADDRESS</span> in <span className="font-mono">.env.local</span> to enable full functionality.
+              </p>
             </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-gray-600">Connected as:</p>
-                  <p className="font-mono text-sm">
-                    {user?.wallet?.address || user?.id || 'Unknown'}
-                  </p>
-                </div>
-                <button
-                  onClick={logout}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                >
-                  Disconnect
-                </button>
-              </div>
+          </div>
+        )}
 
-              <div className="mt-8 pt-8 border-t">
-                <h2 className="text-2xl font-semibold mb-4">Stream Management</h2>
-                <p className="text-gray-600 mb-4">
-                  Contract functionality will be available after deployment.
-                </p>
-                <div className="bg-gray-50 p-4 rounded">
-                  <p className="text-sm text-gray-500">
-                    Contract Address: {process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || 'Not deployed'}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Contract Deployed Success */}
+        {process.env.NEXT_PUBLIC_CONTRACT_ADDRESS && (
+          <div className="bg-[#00E0A3]/20 border border-[#00E0A3] rounded-lg p-4">
+            <p className="text-sm text-[#00E0A3]">
+              <span className="font-semibold">Contract Deployed:</span>{' '}
+              <span className="font-mono text-xs">{process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}</span>
+            </p>
+          </div>
+        )}
+
+        {/* Create Stream Form */}
+        <CreateStreamForm />
+
+        {/* Stream Dashboard */}
+        <StreamDashboard />
       </div>
-    </main>
+    </div>
   );
 }
