@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PrivyProvider } from "@/components/PrivyProvider";
 import Header from "@/components/Header";
+import AnimatedBackground from "@/components/AnimatedBackground";
+import OnboardingTrigger from "@/components/Onboarding/OnboardingTrigger";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,13 +29,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#12121F] text-[#E0E0E0]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0F2A3A] text-[#E0E0E0]`}
       >
+        <AnimatedBackground />
         <PrivyProvider>
           <Header />
-          <main className="pt-20">
+          <main className="pt-20 relative z-10">
             {children}
           </main>
+          <OnboardingTrigger />
         </PrivyProvider>
       </body>
     </html>

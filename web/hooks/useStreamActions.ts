@@ -5,7 +5,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivySafe } from './usePrivySafe';
 import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
 import { toAccountAddress } from '@/lib/privyToAptos';
@@ -17,7 +17,7 @@ export interface StreamActionResult {
 }
 
 export function useStreamActions() {
-  const { authenticated } = usePrivy();
+  const { authenticated } = usePrivySafe();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);

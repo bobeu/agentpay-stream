@@ -92,40 +92,43 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
   const flowRate = parseInt(stream.rate_per_second) / 100_000_000;
 
   return (
-    <div className={`bg-[#1B1B32] rounded-xl shadow-lg p-6 border ${
-      stream.isActive 
-        ? 'border-[#3B82F6]/50 pulse-glow' 
-        : 'border-[#2D2D4A]'
-    } relative overflow-hidden`}>
-      {/* Subtle gradient overlay for active streams */}
+    <div 
+      className={`bg-[#0A1F2E] rounded-xl shadow-lg p-6 border-2 ${
+        stream.isActive 
+          ? 'pulse-cyan' 
+          : ''
+      } relative overflow-hidden`}
+      style={{ borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' }}
+    >
+      {/* Cyan glow overlay for active streams */}
       {stream.isActive && (
-        <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 to-[#8B5CF6]/5 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#00FFFF]/5 to-[#00FFFF]/0 pointer-events-none"></div>
       )}
       
       <div className="relative z-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-stream-gradient mb-1">
+            <h3 className="text-lg font-semibold text-[#00FFFF] mb-1">
               Stream #{stream.stream_id}
             </h3>
             <div className="flex items-center gap-2">
               <span
                 className={`px-2 py-1 rounded text-xs font-medium ${
                   stream.isActive
-                    ? 'bg-[#00E0A3]/20 text-[#00E0A3] border border-[#00E0A3]/30'
-                    : 'bg-[#2D2D4A] text-[#A0A0A0]'
+                    ? 'bg-[#00FFFF]/20 text-[#00FFFF] border border-[#00FFFF]/30'
+                    : 'bg-[#1A3A4A] text-[#A0A0A0]'
                 }`}
               >
                 {stream.isActive ? 'Active' : 'Ended'}
               </span>
               {isSender && (
-                <span className="px-2 py-1 rounded text-xs font-medium bg-[#3B82F6]/20 text-[#3B82F6] border border-[#3B82F6]/30">
+                <span className="px-2 py-1 rounded text-xs font-medium bg-[#FF6600]/20 text-[#FF6600] border border-[#FF6600]/30">
                   Sender
                 </span>
               )}
               {isRecipient && (
-                <span className="px-2 py-1 rounded text-xs font-medium bg-[#8B5CF6]/20 text-[#8B5CF6] border border-[#8B5CF6]/30">
+                <span className="px-2 py-1 rounded text-xs font-medium bg-[#00FFFF]/20 text-[#00FFFF] border border-[#00FFFF]/30">
                   Recipient
                 </span>
               )}
@@ -166,13 +169,13 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
           </div>
         </div>
 
-        {/* Real-Time Accrued Funds */}
-        <div className="bg-gradient-to-r from-[#3B82F6]/20 to-[#8B5CF6]/20 rounded-lg p-4 mb-4 border border-[#3B82F6]/30">
+        {/* Real-Time Accrued Funds - Prominently featuring Electric Cyan */}
+        <div className="bg-gradient-to-r from-[#00FFFF]/20 to-[#00FFFF]/5 rounded-lg p-4 mb-4 border-2 border-[#00FFFF]/40 pulse-cyan">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium text-[#E0E0E0]">
-              Accrued Funds
+              Accrued Funds (Real-time)
             </p>
-            <p className="text-lg font-bold text-stream-gradient">
+            <p className="text-2xl font-bold text-[#00FFFF]">
               {localAccrued.toFixed(6)} APT
             </p>
           </div>
@@ -180,14 +183,14 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
             <p className="text-xs text-[#A0A0A0]">
               Available to Withdraw
             </p>
-            <p className="text-sm font-semibold text-[#00E0A3]">
+            <p className="text-sm font-semibold text-[#FF6600]">
               {stream.availableToWithdraw.toFixed(6)} APT
             </p>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-[#252540] rounded-full h-2">
+            <div className="w-full bg-[#0F2A3A] rounded-full h-2">
               <div
-                className="bg-stream-gradient h-2 rounded-full transition-all duration-1000"
+                className="bg-[#00FFFF] h-2 rounded-full transition-all duration-1000"
                 style={{ width: `${Math.min(100, stream.progress)}%` }}
               />
             </div>
@@ -209,22 +212,22 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-[#DC2626]/20 border border-[#DC2626] rounded-lg">
-            <p className="text-sm text-[#DC2626]">{error}</p>
+          <div className="mb-4 p-3 bg-[#FF6600]/20 border border-[#FF6600] rounded-lg">
+            <p className="text-sm text-[#FF6600]">{error}</p>
           </div>
         )}
 
         {/* Success Message */}
         {transactionHash && (
-          <div className="mb-4 p-3 bg-[#00E0A3]/20 border border-[#00E0A3] rounded-lg">
-            <p className="text-sm text-[#00E0A3] mb-2 font-semibold">
+          <div className="mb-4 p-3 bg-[#00FFFF]/20 border border-[#00FFFF] rounded-lg">
+            <p className="text-sm text-[#00FFFF] mb-2 font-semibold">
               Transaction successful!
             </p>
             <a
               href={`https://explorer.aptoslabs.com/txn/${transactionHash}?network=testnet`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[#00E0A3] hover:underline"
+              className="text-sm text-[#00FFFF] hover:underline"
             >
               View on explorer →
             </a>
@@ -237,7 +240,8 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
             <button
               onClick={handleWithdrawClick}
               disabled={isLoading || isWithdrawing}
-              className="flex-1 bg-[#00E0A3] hover:bg-[#00C893] disabled:bg-[#252540] disabled:text-[#A0A0A0] text-[#12121F] font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+              className="flex-1 bg-[#00FFFF] hover:bg-[#00FFFF]/80 disabled:bg-[#0F2A3A] disabled:text-[#A0A0A0] text-[#081720] font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg border-2"
+              style={!(isLoading || isWithdrawing) ? { borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' } : {}}
             >
               {isWithdrawing ? 'Withdrawing...' : 'Withdraw'}
             </button>
@@ -246,7 +250,8 @@ export default function StreamCard({ stream, userAddress, onActionComplete }: St
             <button
               onClick={handleCancelClick}
               disabled={isLoading || isCancelling}
-              className="flex-1 bg-[#DC2626] hover:bg-[#B91C1C] disabled:bg-[#252540] disabled:text-[#A0A0A0] text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+              className="flex-1 bg-[#FF6600] hover:bg-[#FF6600]/80 disabled:bg-[#0F2A3A] disabled:text-[#A0A0A0] text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg border-2"
+              style={!(isLoading || isCancelling) ? { borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' } : {}}
             >
               {isCancelling ? 'Cancelling...' : 'Cancel Stream'}
             </button>

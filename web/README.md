@@ -34,3 +34,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+cd contract
+aptos move compile --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff
+aptos move publish --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff

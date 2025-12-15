@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivySafe } from './usePrivySafe';
 import { Account, AccountAddress, U64 } from '@aptos-labs/ts-sdk';
 import { createStream } from '@/lib/AgentPayStreamClient';
 import { toAccountAddress, isValidAptosAddress } from '@/lib/privyToAptos';
@@ -26,7 +26,7 @@ export interface StreamCreationResult {
 const APT_TO_OCTAS = 100_000_000; // 1 APT = 10^8 octas
 
 export function useStreamCreation() {
-  const { authenticated, user } = usePrivy();
+  const { authenticated, user } = usePrivySafe();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);

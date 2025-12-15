@@ -5,12 +5,13 @@
 
 'use client';
 
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivySafe } from '@/hooks/usePrivySafe';
 import { useState, useEffect } from 'react';
 import { Lock, Link as LinkIcon } from 'lucide-react';
 
 export default function WalletConnectPanel() {
-  const { ready, authenticated, login, logout, user } = usePrivy();
+  const { ready, authenticated, login, logout, user } = usePrivySafe();
+  
   const [aptosWalletConnected, setAptosWalletConnected] = useState(false);
   const [aptosAddress, setAptosAddress] = useState<string | null>(null);
 
@@ -67,15 +68,15 @@ export default function WalletConnectPanel() {
   }
 
   return (
-    <div className="bg-[#1B1B32] rounded-xl border border-[#2D2D4A] p-6 shadow-lg">
-      <h2 className="text-lg font-semibold mb-4 text-[#E0E0E0]">Wallet Connection</h2>
+    <div className="bg-[#0A1F2E] rounded-xl border border-[#00FFFF]/20 p-6 shadow-lg">
+      <h2 className="text-lg font-semibold mb-4 text-[#00FFFF]">Wallet Connection</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Privy Authentication */}
-        <div className="bg-[#252540] rounded-lg p-4 border border-[#2D2D4A]">
+        <div className="bg-[#0F2A3A] rounded-lg p-4 border border-[#00FFFF]/10">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-[#1B1B32] rounded-lg">
-                <Lock className="w-5 h-5 text-[#3B82F6]" />
+              <div className="p-2 bg-[#1A3A4A] rounded-lg">
+                <Lock className="w-5 h-5 text-[#00FFFF]" />
               </div>
               <div>
                 <p className="text-sm font-medium text-[#E0E0E0]">Privy Auth</p>
@@ -86,21 +87,21 @@ export default function WalletConnectPanel() {
           {!authenticated ? (
             <button
               onClick={login}
-              className="w-full bg-stream-gradient hover:opacity-90 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-lg"
+              className="w-full bg-[#00FFFF] hover:bg-[#00FFFF]/80 text-[#081720] font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-lg"
             >
               Connect Privy
             </button>
           ) : (
             <div className="space-y-2">
-              <div className="bg-[#1B1B32] rounded-lg p-2">
+              <div className="bg-[#1A3A4A] rounded-lg p-2 border border-[#00FFFF]/20">
                 <p className="text-xs text-[#A0A0A0] mb-1">Connected</p>
-                <p className="text-sm font-mono text-[#E0E0E0]">
+                <p className="text-sm font-mono text-[#00FFFF]">
                   {user?.wallet?.address ? formatAddress(user.wallet.address) : user?.id?.slice(0, 8) || 'Unknown'}
                 </p>
               </div>
               <button
                 onClick={logout}
-                className="w-full bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-[#FF6600] hover:bg-[#FF6600]/80 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Disconnect
               </button>
@@ -109,11 +110,11 @@ export default function WalletConnectPanel() {
         </div>
 
         {/* Aptos Wallet */}
-        <div className="bg-[#252540] rounded-lg p-4 border border-[#2D2D4A]">
+        <div className="bg-[#0F2A3A] rounded-lg p-4 border border-[#00FFFF]/10">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-[#1B1B32] rounded-lg">
-                <LinkIcon className="w-5 h-5 text-[#8B5CF6]" />
+              <div className="p-2 bg-[#1A3A4A] rounded-lg">
+                <LinkIcon className="w-5 h-5 text-[#FF6600]" />
               </div>
               <div>
                 <p className="text-sm font-medium text-[#E0E0E0]">Aptos Wallet</p>
@@ -124,15 +125,15 @@ export default function WalletConnectPanel() {
           {!aptosWalletConnected ? (
             <button
               onClick={connectAptosWallet}
-              className="w-full bg-stream-gradient hover:opacity-90 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-lg"
+              className="w-full bg-[#00FFFF] hover:bg-[#00FFFF]/80 text-[#081720] font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-lg"
             >
               Connect Aptos
             </button>
           ) : (
             <div className="space-y-2">
-              <div className="bg-[#1B1B32] rounded-lg p-2">
+              <div className="bg-[#1A3A4A] rounded-lg p-2 border border-[#00FFFF]/20">
                 <p className="text-xs text-[#A0A0A0] mb-1">Connected</p>
-                <p className="text-sm font-mono text-[#E0E0E0]">
+                <p className="text-sm font-mono text-[#00FFFF]">
                   {aptosAddress ? formatAddress(aptosAddress) : 'Unknown'}
                 </p>
               </div>
@@ -141,7 +142,7 @@ export default function WalletConnectPanel() {
                   setAptosWalletConnected(false);
                   setAptosAddress(null);
                 }}
-                className="w-full bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-[#FF6600] hover:bg-[#FF6600]/80 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Disconnect
               </button>

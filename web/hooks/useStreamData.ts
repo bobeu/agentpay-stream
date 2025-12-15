@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivySafe } from './usePrivySafe';
 import { aptosClient, CONTRACT_ADDRESS } from '@/lib/aptosClient';
 import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { StreamResource } from '@/lib/AgentPayStreamClient';
@@ -38,8 +38,10 @@ async function fetchStream(
     const sender = toAccountAddress(senderAddress);
     
     const viewResponse = await aptosClient.view({
-      function: `${CONTRACT_ADDRESS}::agent_pay_stream::get_stream`,
-      functionArguments: [sender.toString(), streamId],
+      payload: {
+        function: `${CONTRACT_ADDRESS}::agent_pay_stream::get_stream`,
+        functionArguments: [sender.toString(), streamId],
+      },
     });
 
     const [senderAddr, recipient, amount, startTime, endTime, ratePerSecond, withdrawn] = viewResponse as [
@@ -164,7 +166,7 @@ async function fetchAllStreamsForAddress(address: string): Promise<StreamResourc
 }
 
 export function useStreamData() {
-  const { authenticated, user } = usePrivy();
+  const { authenticated, user } = usePrivySafe();
   const [streams, setStreams] = useState<StreamData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

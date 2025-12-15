@@ -8,11 +8,11 @@ AgentPay Stream enables real-time, micro-streaming payments on the blockchain. B
 
 ## Features
 
-- 🚀 **Micro-Streaming Payments**: Real-time payment streams with configurable rates
-- 🔒 **Secure**: Built on Move language with resource safety guarantees
-- 💼 **User-Friendly**: Privy-powered wallet authentication for seamless onboarding
-- ⚡ **Fast**: Optimized for Movement L1 performance
-- 🧪 **Tested**: Comprehensive unit tests for smart contracts
+- **Micro-Streaming Payments**: Real-time payment streams with configurable rates
+- **Secure**: Built on Move language with resource safety guarantees
+- **User-Friendly**: Privy-powered wallet authentication for seamless onboarding
+- **Fast**: Optimized for Movement L1 performance
+- **Tested**: Comprehensive unit tests for smart contracts
 
 ## Quick Start
 
@@ -114,5 +114,8 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
-Built with ❤️ on Movement L1
+Built on Movement L1
 
+<!-- cd contract
+aptos move compile --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff
+aptos move publish --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff -->

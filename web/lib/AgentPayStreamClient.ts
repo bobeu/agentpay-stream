@@ -65,8 +65,10 @@ export async function getStream(
   streamId: U64
 ): Promise<StreamResource> {
   const viewResponse = await aptosClient.view({
-    function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_stream`,
-    functionArguments: [sender, streamId],
+    payload: {
+      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_stream`,
+      functionArguments: [sender, streamId],
+    },
   });
 
   const [senderAddr, recipient, amount, startTime, endTime, ratePerSecond, withdrawn] = viewResponse as [

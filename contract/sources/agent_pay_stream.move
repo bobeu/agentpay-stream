@@ -35,12 +35,12 @@ module agentpay_stream::agent_pay_stream {
     }
 
     /// Create a new payment stream
-    public fun create_stream(
+    public entry fun create_stream(
         sender: &signer,
         recipient: address,
         amount: u64,
         duration_seconds: u64,
-    ): u64 acquires StreamCounter {
+    ) acquires StreamCounter {
         let sender_addr = signer::address_of(sender);
         let current_time = timestamp::now_seconds();
         let end_time = current_time + duration_seconds;
@@ -62,8 +62,6 @@ module agentpay_stream::agent_pay_stream {
         };
 
         move_to(sender, stream);
-
-        stream_id
     }
 
     /// Get stream information
@@ -82,11 +80,11 @@ module agentpay_stream::agent_pay_stream {
     }
 
     /// Withdraw available funds from a stream
-    public fun withdraw_from_stream(
+    public entry fun withdraw_from_stream(
         recipient: &signer,
         sender: address,
         stream_id: u64,
-    ): u64 acquires StreamResource {
+    ) acquires StreamResource {
         let recipient_addr = signer::address_of(recipient);
         let stream = borrow_global_mut<StreamResource>(sender);
         
@@ -104,8 +102,30 @@ module agentpay_stream::agent_pay_stream {
         let withdrawable = available - stream.withdrawn;
 
         stream.withdrawn = stream.withdrawn + withdrawable;
+    }
 
-        withdrawable
+    /// Cancel a stream (only sender can cancel)
+    public entry fun cancel_stream(
+        sender: &signer,
+        stream_id: u64,
+    ) acquires StreamResource {
+        let sender_addr = signer::address_of(sender);
+        let stream = borrow_global_mut<StreamResource>(sender_addr);
+        
+        assert!(stream.stream_id == stream_id, 1);
+        assert!(stream.sender == sender_addr, 2);
+
+        // Delete the stream resource
+        let StreamResource {
+            stream_id: _,
+            sender: _,
+            recipient: _,
+            amount: _,
+            start_time: _,
+            end_time: _,
+            rate_per_second: _,
+            withdrawn: _,
+        } = move_from<StreamResource>(sender_addr);
     }
 }
 

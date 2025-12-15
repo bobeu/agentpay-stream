@@ -6,12 +6,12 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivySafe } from '@/hooks/usePrivySafe';
 import { useStreamCreation } from '@/hooks/useStreamCreation';
 import { isValidAptosAddress } from '@/lib/privyToAptos';
 
 export default function CreateStreamForm() {
-  const { ready, authenticated, login } = usePrivy();
+  const { ready, authenticated, login } = usePrivySafe();
   const { createStreamTransaction, isLoading, error, transactionHash, reset } = useStreamCreation();
 
   const [recipientAddress, setRecipientAddress] = useState('');
@@ -100,36 +100,37 @@ export default function CreateStreamForm() {
       : null;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="bg-[#1B1B32] rounded-xl border border-[#2D2D4A] shadow-xl p-6 md:p-8 relative overflow-hidden">
-        {/* Subtle gradient border glow */}
-        <div className="absolute inset-0 rounded-xl gradient-glow opacity-30 pointer-events-none"></div>
+    <div className="w-full max-w-md mx-auto">
+      <div className="bg-[#1A3A4A] rounded-xl border-2 shadow-2xl p-5 relative overflow-hidden" style={{ borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' }}>
+        {/* Cyan border glow */}
+        <div className="absolute inset-0 rounded-xl cyan-glow opacity-20 pointer-events-none"></div>
         
         <div className="relative z-10">
-          <h2 className="text-2xl font-bold mb-6 text-stream-gradient">
+          <h2 className="text-xl font-bold mb-5 text-[#00FFFF]">
             Create Payment Stream
           </h2>
 
           {!authenticated && (
-            <div className="mb-6 p-4 bg-[#252540] border border-[#2D2D4A] rounded-lg">
-              <p className="text-sm text-[#E0E0E0] mb-3">
+            <div className="mb-5 p-3 bg-[#0F2A3A] border border-[#00FFFF]/20 rounded-lg">
+              <p className="text-xs text-[#E0E0E0] mb-2">
                 Please connect your wallet to create a stream.
               </p>
               <button
                 onClick={login}
-                className="w-full bg-stream-gradient hover:opacity-90 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+                className="w-full bg-[#FF6600] hover:bg-[#FF6600]/80 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg text-sm border-2"
+                style={{ borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' }}
               >
                 Connect Wallet
               </button>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Recipient Address */}
             <div>
               <label
                 htmlFor="recipientAddress"
-                className="block text-sm font-medium text-[#E0E0E0] mb-2"
+                className="block text-xs font-medium text-[#E0E0E0] mb-1.5"
               >
                 Recipient Address
               </label>
@@ -144,15 +145,15 @@ export default function CreateStreamForm() {
                   }
                 }}
                 placeholder="0x..."
-                className={`w-full px-4 py-3 bg-[#252540] border rounded-lg focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
+                className={`w-full px-3 py-2 text-sm bg-[#0F2A3A] border rounded-lg focus:ring-2 focus:ring-[#00FFFF] focus:border-[#00FFFF] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
                   formErrors.recipientAddress
-                    ? 'border-[#DC2626]'
-                    : 'border-[#2D2D4A]'
+                    ? 'border-[#FF6600]'
+                    : 'border-[#1A3A4A]'
                 }`}
                 disabled={!authenticated || isLoading}
               />
               {formErrors.recipientAddress && (
-                <p className="mt-1 text-sm text-[#DC2626]">
+                <p className="mt-1 text-xs text-[#FF6600]">
                   {formErrors.recipientAddress}
                 </p>
               )}
@@ -165,7 +166,7 @@ export default function CreateStreamForm() {
             <div>
               <label
                 htmlFor="totalAmount"
-                className="block text-sm font-medium text-[#E0E0E0] mb-2"
+                className="block text-xs font-medium text-[#E0E0E0] mb-1.5"
               >
                 Total Amount (APT)
               </label>
@@ -182,15 +183,15 @@ export default function CreateStreamForm() {
                   }
                 }}
                 placeholder="100.0"
-                className={`w-full px-4 py-3 bg-[#252540] border rounded-lg focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
+                className={`w-full px-3 py-2 text-sm bg-[#0F2A3A] border rounded-lg focus:ring-2 focus:ring-[#00FFFF] focus:border-[#00FFFF] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
                   formErrors.totalAmount
-                    ? 'border-[#DC2626]'
-                    : 'border-[#2D2D4A]'
+                    ? 'border-[#FF6600]'
+                    : 'border-[#1A3A4A]'
                 }`}
                 disabled={!authenticated || isLoading}
               />
               {formErrors.totalAmount && (
-                <p className="mt-1 text-sm text-[#DC2626]">
+                <p className="mt-1 text-xs text-[#FF6600]">
                   {formErrors.totalAmount}
                 </p>
               )}
@@ -203,7 +204,7 @@ export default function CreateStreamForm() {
             <div>
               <label
                 htmlFor="flowRate"
-                className="block text-sm font-medium text-[#E0E0E0] mb-2"
+                className="block text-xs font-medium text-[#E0E0E0] mb-1.5"
               >
                 Flow Rate (APT/Second)
               </label>
@@ -220,15 +221,15 @@ export default function CreateStreamForm() {
                   }
                 }}
                 placeholder="0.0001"
-                className={`w-full px-4 py-3 bg-[#252540] border rounded-lg focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
+                className={`w-full px-3 py-2 text-sm bg-[#0F2A3A] border rounded-lg focus:ring-2 focus:ring-[#00FFFF] focus:border-[#00FFFF] text-[#E0E0E0] placeholder-[#A0A0A0] transition-all ${
                   formErrors.flowRate
-                    ? 'border-[#DC2626]'
-                    : 'border-[#2D2D4A]'
+                    ? 'border-[#FF6600]'
+                    : 'border-[#1A3A4A]'
                 }`}
                 disabled={!authenticated || isLoading}
               />
               {formErrors.flowRate && (
-                <p className="mt-1 text-sm text-[#DC2626]">
+                <p className="mt-1 text-xs text-[#FF6600]">
                   {formErrors.flowRate}
                 </p>
               )}
@@ -236,8 +237,8 @@ export default function CreateStreamForm() {
                 The rate at which tokens will be streamed per second
               </p>
               {calculatedDuration && (
-                <div className="mt-2 p-3 bg-[#252540] border border-[#00E0A3]/30 rounded-lg">
-                  <p className="text-sm font-semibold text-[#00E0A3]">
+                <div className="mt-2 p-2 bg-[#0F2A3A] border border-[#FF6600]/30 rounded-lg">
+                  <p className="text-xs font-semibold text-[#FF6600]">
                     Stream duration: ~{calculatedDuration} seconds
                   </p>
                 </div>
@@ -246,22 +247,22 @@ export default function CreateStreamForm() {
 
             {/* Error Message */}
             {error && (
-              <div className="p-4 bg-[#DC2626]/20 border border-[#DC2626] rounded-lg">
-                <p className="text-sm text-[#DC2626]">{error}</p>
+              <div className="p-3 bg-[#FF6600]/20 border border-[#FF6600] rounded-lg">
+                <p className="text-xs text-[#FF6600]">{error}</p>
               </div>
             )}
 
             {/* Success Message */}
             {transactionHash && (
-              <div className="p-4 bg-[#00E0A3]/20 border border-[#00E0A3] rounded-lg">
-                <p className="text-sm text-[#00E0A3] mb-2 font-semibold">
+              <div className="p-3 bg-[#00FFFF]/20 border border-[#00FFFF] rounded-lg">
+                <p className="text-xs text-[#00FFFF] mb-1 font-semibold">
                   Stream created successfully!
                 </p>
                 <a
                   href={`https://explorer.aptoslabs.com/txn/${transactionHash}?network=testnet`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[#00E0A3] hover:underline"
+                  className="text-xs text-[#00FFFF] hover:underline"
                 >
                   View transaction on explorer →
                 </a>
@@ -272,11 +273,12 @@ export default function CreateStreamForm() {
             <button
               type="submit"
               disabled={isSubmitDisabled}
-              className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 shadow-lg ${
+              className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
                 isSubmitDisabled
-                  ? 'bg-[#252540] text-[#A0A0A0] cursor-not-allowed'
-                  : 'bg-stream-gradient hover:opacity-90 text-white'
+                  ? 'bg-[#0F2A3A] text-[#A0A0A0] cursor-not-allowed border border-[#1A3A4A]'
+                  : 'bg-[#FF6600] hover:bg-[#FF6600]/80 text-white border-2'
               }`}
+              style={!isSubmitDisabled ? { borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' } : {}}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">

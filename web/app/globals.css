@@ -1,16 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  /* Deep Cosmos Theme Colors */
-  --background: #12121F;
+  /* Agentic Flow Theme Colors - Lighter background for visibility */
+  --background: #0F2A3A;
   --foreground: #E0E0E0;
-  --card-bg: #1B1B32;
-  --accent-success: #00E0A3;
-  --electric-blue: #3B82F6;
-  --cyber-violet: #8B5CF6;
-  --warning-red: #DC2626;
-  --input-bg: #252540;
-  --border-color: #2D2D4A;
+  --card-bg: #1A3A4A;
+  --primary-cyan: #00FFFF;
+  --secondary-orange: #FF6600;
+  --input-bg: #1F3F4F;
+  --border-color: #2A4A5A;
+  --text-secondary: #A0A0A0;
 }
 
 @theme inline {
@@ -27,48 +26,59 @@ body {
   min-height: 100vh;
 }
 
-/* Stream Gradient Utility */
-.bg-stream-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+/* Agentic Flow Utilities */
+.bg-agentic-cyan {
+  background-color: var(--primary-cyan);
 }
 
-.text-stream-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.text-agentic-cyan {
+  color: var(--primary-cyan);
 }
 
-.border-stream-gradient {
-  border-image: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%) 1;
+.border-agentic-cyan {
+  border-color: var(--primary-cyan);
 }
 
-/* Animated gradient border glow */
-@keyframes gradient-glow {
+.bg-agentic-orange {
+  background-color: var(--secondary-orange);
+}
+
+.text-agentic-orange {
+  color: var(--secondary-orange);
+}
+
+.border-agentic-orange {
+  border-color: var(--secondary-orange);
+}
+
+/* Animated cyan glow */
+@keyframes cyan-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
   }
 }
 
-.gradient-glow {
-  animation: gradient-glow 3s ease-in-out infinite;
+.cyan-glow {
+  animation: cyan-glow 3s ease-in-out infinite;
 }
 
-/* Subtle pulse animation for active streams */
-@keyframes pulse-glow {
+/* Pulse animation for active streams */
+@keyframes pulse-cyan {
   0%, 100% {
     opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
   }
   50% {
     opacity: 0.8;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
   }
 }
 
-.pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+.pulse-cyan {
+  animation: pulse-cyan 2s ease-in-out infinite;
 }
 
 /* Scrollbar styling */
@@ -86,5 +96,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-color);
+  background: var(--primary-cyan);
 }

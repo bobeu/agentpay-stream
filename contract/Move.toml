@@ -7,16 +7,16 @@ agentpay_stream = "_"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "mainnet"
+rev = "aptos-node-v1.11.0"
 subdir = "aptos-move/framework/aptos-framework"
 
 [dependencies.AptosStdlib]
 git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "mainnet"
+rev = "aptos-node-v1.11.0"
 subdir = "aptos-move/framework/aptos-stdlib"
 
 [dependencies.AptosToken]
 git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "mainnet"
+rev = "aptos-node-v1.11.0"
 subdir = "aptos-move/framework/aptos-token"
 

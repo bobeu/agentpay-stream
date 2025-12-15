@@ -36,6 +36,8 @@ next-env.d.ts
 .aptos/
 contract/build/
 contract/.aptos/
+contract/account.txt
+contract/derive-key.js
 
 # IDE
 .vscode/
@@ -46,4 +48,10 @@ contract/.aptos/
 
 # OS
 Thumbs.db
-
+DEEP_COSMOS_DESIGN_IMPLEMENTATION.md
+STREAM_CREATION_IMPLEMENTATION.md
+STREAM_MANAGEMENT_IMPLEMENTATION.md
+DEPLOYMENT_SUMMARY.md
+DEPLOYMENT_COMPLETE.md
+SETUP_README.md
+HACKATHON_SUBMISSION.md
