@@ -15,7 +15,7 @@
     "@privy-io/react-auth": "^3.8.1",
     "got": "^11.8.6",
     "lucide-react": "^0.559.0",
-    "next": "16.0.7",
+    "next": "16.0.10",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "webpack": "^5.103.0"
