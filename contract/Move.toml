@@ -3,7 +3,7 @@ name = "AgentPayStream"
 version = "1.0.0"
 
 [addresses]
-agentpay_stream = "_"
+agentpay_stream = "0x2c8f0d41b9fb474cfc59378a695eb74d3e4507d7107cad3fe47cea61caaa770d"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-core.git"

@@ -9,15 +9,24 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePrivySafe } from '@/hooks/usePrivySafe';
-import { Wallet, CheckCircle2 } from 'lucide-react';
+import { useAccountBalance } from '@/hooks/useAccountBalance';
+import { Wallet, CheckCircle2, Loader2 } from 'lucide-react';
 import WalletDisconnectModal from './WalletDisconnectModal';
 
 export default function Header() {
   const { authenticated, login, user } = usePrivySafe();
+  const { balance, isLoading: balanceLoading } = useAccountBalance();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const formatBalance = (bal: number | null) => {
+    if (bal === null) return '--';
+    if (bal === 0) return '0';
+    if (bal < 0.000001) return '<0.000001';
+    return bal.toFixed(6);
   };
 
   return (
@@ -27,17 +36,33 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <Image
-                src="/logo.png"
+                src="/logo4.png"
                 alt="AgentPay Stream"
-                width={32}
-                height={32}
-                className="rounded-lg"
+                width={72}
+                height={72}
+                className="rounded-l pt-4"
               />
-              <span className="text-xl font-bold text-[#00FFFF]">AgentPay Stream</span>
+              {/* <span className="text-xl font-bold text-[#00FFFF]">AgentPay Stream</span> */}
             </Link>
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-[#A0A0A0] hidden sm:block">Movement L1</span>
+              
+              {/* Account Balance Display */}
+              {(authenticated || balance !== null) && (
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#1A3A4A] border border-[#00FFFF]/20 rounded-lg">
+                  {balanceLoading ? (
+                    <Loader2 className="w-4 h-4 text-[#00FFFF] animate-spin" />
+                  ) : (
+                    <>
+                      <span className="text-xs text-[#A0A0A0]">Balance:</span>
+                      <span className="text-sm font-semibold text-[#00FFFF]">
+                        {formatBalance(balance)} APT
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
               
               {/* Wallet Connect/Status Button */}
               {!authenticated ? (

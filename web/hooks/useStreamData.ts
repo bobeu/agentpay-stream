@@ -7,8 +7,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { usePrivySafe } from './usePrivySafe';
-import { aptosClient, CONTRACT_ADDRESS } from '@/lib/aptosClient';
-import { AccountAddress } from '@aptos-labs/ts-sdk';
+import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
+// import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { StreamResource } from '@/lib/AgentPayStreamClient';
 import { toAccountAddress } from '@/lib/privyToAptos';
 

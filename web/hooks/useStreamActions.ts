@@ -6,7 +6,7 @@
 
 import { useState, useCallback } from 'react';
 import { usePrivySafe } from './usePrivySafe';
-import { AccountAddress } from '@aptos-labs/ts-sdk';
+// import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
 import { toAccountAddress } from '@/lib/privyToAptos';
 

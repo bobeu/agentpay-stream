@@ -94,12 +94,26 @@ Write-Host ""
 # Deploy to testnet
 Write-Host "[4/4] Deploying contract to Movement L1 Testnet..." -ForegroundColor Yellow
 Write-Host "This may take a few moments..." -ForegroundColor Gray
+Write-Host "Note: If you get a 'BACKWARD_INCOMPATIBLE_MODULE_UPDATE' error," -ForegroundColor Yellow
+Write-Host "      the contract already exists. You may need to deploy to a new account." -ForegroundColor Yellow
 
-$deployOutput = aptos move publish --named-addresses agentpay_stream=$accountAddress --network testnet --profile testnet 2>&1
+$deployOutput = aptos move publish --named-addresses agentpay_stream=$accountAddress --profile testnet 2>&1
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Error: Contract deployment failed" -ForegroundColor Red
-    Write-Host $deployOutput -ForegroundColor Red
+    $errorText = $deployOutput -join "`n"
+    if ($errorText -match "BACKWARD_INCOMPATIBLE_MODULE_UPDATE") {
+        Write-Host "" -ForegroundColor Red
+        Write-Host "Error: Cannot update existing module (incompatible changes)" -ForegroundColor Red
+        Write-Host "The deployed contract has incompatible function signatures." -ForegroundColor Yellow
+        Write-Host "" -ForegroundColor Yellow
+        Write-Host "Solution: Deploy to a new account address" -ForegroundColor Cyan
+        Write-Host "1. Create a new account: aptos init --network testnet --profile testnet-new" -ForegroundColor White
+        Write-Host "2. Update Move.toml with the new address" -ForegroundColor White
+        Write-Host "3. Run this script again" -ForegroundColor White
+    } else {
+        Write-Host "Error: Contract deployment failed" -ForegroundColor Red
+        Write-Host $deployOutput -ForegroundColor Red
+    }
     exit 1
 }
 
@@ -113,6 +127,6 @@ Write-Host "1. Update web/.env.local with:" -ForegroundColor White
 $envLine = "   NEXT_PUBLIC_CONTRACT_ADDRESS=" + $accountAddress
 Write-Host $envLine -ForegroundColor Cyan
 Write-Host ""
-Write-Host "2. Restart the Next.js dev server" -ForegroundColor White
+Write-Host '2. Restart the Next.js dev server' -ForegroundColor White
 Write-Host ""
 

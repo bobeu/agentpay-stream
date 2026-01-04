@@ -9,11 +9,11 @@ Since Aptos CLI needs to be installed manually, follow these steps:
 2. Download the latest `aptos-cli-*-windows-x86_64.zip`
 3. Extract and add to your PATH
 
-**Option B: Install via Cargo**
+**Option B: Install via Cargo**                                                                                                                                                                                                                         
 ```powershell
 cargo install --git https://github.com/aptos-labs/aptos-core.git aptos --tag aptos-cli-latest
 ```
-
+                                                    
 **Verify Installation:**
 ```powershell
 aptos --version

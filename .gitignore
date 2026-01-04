@@ -36,6 +36,7 @@ next-env.d.ts
 .aptos/
 contract/build/
 contract/.aptos/
+contract/aptos-core/
 contract/account.txt
 contract/derive-key.js
 
@@ -54,4 +55,3 @@ STREAM_MANAGEMENT_IMPLEMENTATION.md
 DEPLOYMENT_SUMMARY.md
 DEPLOYMENT_COMPLETE.md
 SETUP_README.md
-HACKATHON_SUBMISSION.md

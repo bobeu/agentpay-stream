@@ -5,8 +5,8 @@
 
 import { useState, useCallback } from 'react';
 import { usePrivySafe } from './usePrivySafe';
-import { Account, AccountAddress, U64 } from '@aptos-labs/ts-sdk';
-import { createStream } from '@/lib/AgentPayStreamClient';
+// import { Account, AccountAddress, U64 } from '@aptos-labs/ts-sdk';
+// import { createStream } from '@/lib/AgentPayStreamClient';
 import { toAccountAddress, isValidAptosAddress } from '@/lib/privyToAptos';
 import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
 
@@ -113,6 +113,10 @@ export function useStreamCreation() {
         const { aptosClient } = await import('@/lib/aptosClient');
         
         // Build the transaction
+        console.log("recipient.toString()", recipient.toString());
+        console.log("amountInOctas.toString()", amountInOctas.toString());
+        console.log("durationSeconds.toString()", durationSeconds.toString());
+
         const transaction = await aptosClient.transaction.build.simple({
           sender: accountAddress,
           data: {

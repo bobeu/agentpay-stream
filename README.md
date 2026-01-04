@@ -115,7 +115,3 @@ Contributions are welcome! Please open an issue or submit a pull request.
 ---
 
 Built on Movement L1
-
-<!-- cd contract
-aptos move compile --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff
-aptos move publish --named-addresses agentpay_stream=0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff -->

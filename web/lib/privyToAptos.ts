@@ -29,8 +29,28 @@ export function isValidAptosAddress(address: string): boolean {
 
 /**
  * Convert a string to Aptos AccountAddress
+ * Handles both full Aptos addresses and validates the format
  */
 export function toAccountAddress(address: string): AccountAddress {
-  return AccountAddress.fromString(address);
+  // Remove 0x prefix if present
+  let cleanAddress = address.startsWith('0x') ? address.slice(2) : address;
+  
+  // Check if it's a valid Aptos address length (60-64 hex chars)
+  if (cleanAddress.length < 60 || cleanAddress.length > 64) {
+    throw new Error(
+      `Invalid Aptos address length: ${address}. Expected 60-64 hex characters (excluding 0x). ` +
+      `This might be an Ethereum address. Please use an Aptos wallet address.`
+    );
+  }
+  
+  // Pad with zeros if needed to reach 64 characters
+  if (cleanAddress.length < 64) {
+    cleanAddress = cleanAddress.padStart(64, '0');
+  }
+  
+  // Add 0x prefix back
+  const fullAddress = '0x' + cleanAddress;
+  
+  return AccountAddress.fromString(fullAddress);
 }
 

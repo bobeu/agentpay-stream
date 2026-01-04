@@ -118,7 +118,7 @@ export default function CreateStreamForm() {
               <button
                 onClick={login}
                 className="w-full bg-[#FF6600] hover:bg-[#FF6600]/80 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg text-sm border-2"
-                style={{ borderRightWidth: '8px', borderBottomWidth: '8px', borderColor: '#00FFFF' }}
+                style={{ borderRightWidth: '4px', borderBottomWidth: '4px', borderColor: '#00FFFF' }}
               >
                 Connect Wallet
               </button>
@@ -247,7 +247,7 @@ export default function CreateStreamForm() {
 
             {/* Error Message */}
             {error && (
-              <div className="p-3 bg-[#FF6600]/20 border border-[#FF6600] rounded-lg">
+              <div className="w-full overflow-auto p-3 flex flex-col justify-center bg-[#FF6600]/20 border border-[#FF6600] rounded-lg">
                 <p className="text-xs text-[#FF6600]">{error}</p>
               </div>
             )}
