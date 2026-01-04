@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PrivyProvider } from "@/components/PrivyProvider";
 import Header from "@/components/Header";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import OnboardingTrigger from "@/components/Onboarding/OnboardingTrigger";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "AgentPay Stream - Micro-Streaming Payments",
@@ -29,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0F2A3A] text-[#E0E0E0]`}
+        className={`font-mono antialiased bg-[#0F2A3A] text-[#E0E0E0]`}
       >
         <AnimatedBackground />
         <PrivyProvider>
