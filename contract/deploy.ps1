@@ -41,9 +41,13 @@ if (-not (Test-Path ".aptos")) {
     New-Item -ItemType Directory -Path ".aptos" | Out-Null
 }
 
-# Initialize with testnet profile
-Write-Host "Initializing Aptos account for testnet..." -ForegroundColor Gray
-aptos init --network testnet --seed-phrase "$seedPhrase" --profile testnet --assume-yes
+# Initialize with Movement testnet profile
+# Movement Testnet uses custom network configuration
+Write-Host "Initializing Aptos account for Movement testnet..." -ForegroundColor Gray
+Write-Host "Using Movement testnet endpoint: https://full.testnet.movementinfra.xyz/v1" -ForegroundColor Gray
+
+# Create custom network configuration for Movement testnet
+aptos init --network custom --seed-phrase "$seedPhrase" --profile testnet --assume-yes --rest-url "https://full.testnet.movementinfra.xyz/v1" --faucet-url "https://faucet.testnet.movementinfra.xyz"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to initialize account" -ForegroundColor Red
@@ -91,8 +95,10 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "✓ Contract compiled successfully" -ForegroundColor Green
 Write-Host ""
 
-# Deploy to testnet
-Write-Host "[4/4] Deploying contract to Movement L1 Testnet..." -ForegroundColor Yellow
+# Deploy to Movement testnet
+Write-Host "[4/4] Deploying contract to Movement Testnet..." -ForegroundColor Yellow
+Write-Host "Network: Movement Testnet (Chain ID: 250)" -ForegroundColor Cyan
+Write-Host "RPC: https://full.testnet.movementinfra.xyz/v1" -ForegroundColor Cyan
 Write-Host "This may take a few moments..." -ForegroundColor Gray
 Write-Host "Note: If you get a 'BACKWARD_INCOMPATIBLE_MODULE_UPDATE' error," -ForegroundColor Yellow
 Write-Host "      the contract already exists. You may need to deploy to a new account." -ForegroundColor Yellow

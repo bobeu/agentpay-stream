@@ -5,10 +5,9 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { usePrivySafe } from './usePrivySafe';
-// import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
 import { toAccountAddress } from '@/lib/privyToAptos';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 export interface StreamActionResult {
   success: boolean;
@@ -17,7 +16,8 @@ export interface StreamActionResult {
 }
 
 export function useStreamActions() {
-  const { authenticated } = usePrivySafe();
+  // const { authenticated } = usePrivy();
+  const { connected } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export function useStreamActions() {
    */
   const handleWithdraw = useCallback(
     async (senderAddress: string, streamId: string): Promise<StreamActionResult> => {
-      if (!authenticated) {
+      if (!connected) {
         const errorMsg = 'Please connect your wallet first';
         setError(errorMsg);
         return { success: false, error: errorMsg };
@@ -96,7 +96,7 @@ export function useStreamActions() {
         setIsLoading(false);
       }
     },
-    [authenticated]
+    [connected]
   );
 
   /**
@@ -104,7 +104,7 @@ export function useStreamActions() {
    */
   const handleCancel = useCallback(
     async (streamId: string): Promise<StreamActionResult> => {
-      if (!authenticated) {
+      if (!connected) {
         const errorMsg = 'Please connect your wallet first';
         setError(errorMsg);
         return { success: false, error: errorMsg };
@@ -172,7 +172,7 @@ export function useStreamActions() {
         setIsLoading(false);
       }
     },
-    [authenticated]
+    [connected]
   );
 
   const reset = useCallback(() => {

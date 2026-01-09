@@ -43,11 +43,30 @@ const nextConfig: NextConfig = {
       };
     }
     
+    // Handle optional dependencies for wallet adapters
+    config.resolve.alias = {
+      ...config.resolve.alias,
+    };
+    
+    // Ignore optional dependencies that may not be available
+    config.externals = config.externals || [];
+    if (isServer) {
+      config.externals.push({
+        '@telegram-apps/bridge': 'commonjs @telegram-apps/bridge',
+      });
+    }
+    
     return config;
   },
   
   // Exclude test files from being processed (moved from experimental in Next.js 16)
-  serverExternalPackages: ['thread-stream', '@walletconnect/ethereum-provider'],
+  serverExternalPackages: [
+    'thread-stream', 
+    '@walletconnect/ethereum-provider',
+    '@telegram-apps/bridge',
+    '@aptos-connect/web-transport',
+    '@identity-connect/dapp-sdk',
+  ],
 };
 
 export default nextConfig;

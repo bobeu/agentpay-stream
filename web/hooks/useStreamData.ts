@@ -6,22 +6,21 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { usePrivySafe } from './usePrivySafe';
 import { CONTRACT_ADDRESS } from '@/lib/aptosClient';
-// import { AccountAddress } from '@aptos-labs/ts-sdk';
 import { StreamResource } from '@/lib/AgentPayStreamClient';
 import { toAccountAddress } from '@/lib/privyToAptos';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 export interface StreamData extends StreamResource {
   // Computed fields
-  accruedFunds: number; // in APT
-  availableToWithdraw: number; // in APT
+  accruedFunds: number; // in MOVE
+  availableToWithdraw: number; // in MOVE
   isActive: boolean;
   timeRemaining: number; // seconds
   progress: number; // percentage (0-100)
 }
 
-const APT_TO_OCTAS = 100_000_000; // 1 APT = 10^8 octas
+const MOVE_TO_OCTAS = 100_000_000; // 1 MOVE = 10^8 octas
 const POLL_INTERVAL = 15000; // 15 seconds
 
 /**
@@ -89,11 +88,11 @@ function calculateStreamData(stream: StreamResource): StreamData {
 
   // Calculate accrued funds (total that should have been streamed)
   const accruedOctas = ratePerSecond * Math.max(0, elapsed);
-  const accruedFunds = accruedOctas / APT_TO_OCTAS;
+  const accruedFunds = accruedOctas / MOVE_TO_OCTAS;
 
   // Calculate available to withdraw (accrued - already withdrawn)
   const availableOctas = Math.max(0, accruedOctas - withdrawn);
-  const availableToWithdraw = availableOctas / APT_TO_OCTAS;
+  const availableToWithdraw = availableOctas / MOVE_TO_OCTAS;
 
   // Check if stream is active
   const isActive = currentTime < endTime && elapsed >= 0;
@@ -123,41 +122,27 @@ function calculateStreamData(stream: StreamResource): StreamData {
  * 2. Use a table/index to track streams
  * 3. Query multiple addresses if the user has multiple accounts
  */
+
 async function fetchAllStreamsForAddress(address: string): Promise<StreamResource[]> {
   if (!CONTRACT_ADDRESS || !address) return [];
 
   try {
-    // For MVP, we'll try to fetch streams by querying the sender's resource
-    // Since streams are stored under the sender's address, we need to:
-    // 1. Try to get the StreamCounter to know how many streams exist
-    // 2. Try fetching each stream ID until we find all active ones
-    
-    // This is a simplified approach - in production, you'd want to:
-    // - Use events to track stream creation
-    // - Maintain an index/table of all streams
-    // - Query multiple addresses if needed
-    
     const streams: StreamResource[] = [];
-    const maxStreamsToCheck = 100; // Limit to prevent excessive queries
+    // Note: In a real Move contract, you'd usually query a 'StreamCounter' resource 
+    // first to know how many times to loop. We'll check up to 10 for the MVP.
+    const maxStreamsToCheck = 10; 
     
-    // Try fetching streams by ID (0 to maxStreamsToCheck)
-    // In a real implementation, you'd query events or use a better indexing mechanism
     for (let i = 0; i < maxStreamsToCheck; i++) {
       try {
         const stream = await fetchStream(address, i.toString());
         if (stream) {
-          // Check if this stream is for the current user (as sender or recipient)
-          if (stream.sender.toLowerCase() === address.toLowerCase() || 
-              stream.recipient.toLowerCase() === address.toLowerCase()) {
-            streams.push(stream);
-          }
+          streams.push(stream);
         }
-      } catch {
-        // Stream doesn't exist or error - continue
+      } catch (e) {
+        // If fetchStream fails, we've likely hit the end of the user's streams
         break;
       }
     }
-
     return streams;
   } catch (error) {
     console.error('Error fetching streams:', error);
@@ -166,34 +151,16 @@ async function fetchAllStreamsForAddress(address: string): Promise<StreamResourc
 }
 
 export function useStreamData() {
-  const { authenticated, user } = usePrivySafe();
+  const { connected, account } = useWallet();
   const [streams, setStreams] = useState<StreamData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [aptosAddress, setAptosAddress] = useState<string | null>(null);
 
-  // Get Aptos wallet address
-  useEffect(() => {
-    const getAptosAddress = async () => {
-      if (typeof window !== 'undefined' && (window as any).aptos) {
-        try {
-          const wallet = (window as any).aptos;
-          const account = await wallet.account();
-          if (account?.address) {
-            setAptosAddress(account.address);
-          }
-        } catch {
-          // Wallet not connected
-        }
-      }
-    };
-
-    getAptosAddress();
-  }, []);
+  const aptosAddress = account?.address.toString();
 
   // Fetch streams
   const fetchStreams = useCallback(async () => {
-    if (!authenticated || !aptosAddress) {
+    if (!connected || !aptosAddress) {
       setStreams([]);
       return;
     }
@@ -211,7 +178,7 @@ export function useStreamData() {
     } finally {
       setIsLoading(false);
     }
-  }, [authenticated, aptosAddress]);
+  }, [connected, aptosAddress]);
 
   // Initial fetch and polling
   useEffect(() => {

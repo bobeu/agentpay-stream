@@ -59,7 +59,7 @@ $balance = aptos account list --profile $profileName 2>&1
 if ($LASTEXITCODE -ne 0 -or $balance -match "0 APT") {
     Write-Host "Account needs funding. Please fund the account:" -ForegroundColor Yellow
     Write-Host "  Address: $accountAddress" -ForegroundColor Cyan
-    Write-Host "  Faucet: https://faucet.testnet.aptoslabs.com/" -ForegroundColor White
+    Write-Host "  Faucet: https://faucet.testnet.movementinfra.xyz" -ForegroundColor White
     Write-Host ""
     $funded = Read-Host "Press Enter after funding the account, or 'q' to quit"
     if ($funded -eq 'q') {

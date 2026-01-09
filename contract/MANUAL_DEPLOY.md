@@ -19,11 +19,16 @@ cargo install --git https://github.com/aptos-labs/aptos-core.git aptos --tag apt
 aptos --version
 ```
 
-## Step 2: Initialize Account
+## Step 2: Initialize Account for Movement Testnet
+
+Movement Testnet uses a custom network configuration:
+- Chain ID: 250
+- RPC: https://full.testnet.movementinfra.xyz/v1
+- Faucet: https://faucet.testnet.movementinfra.xyz
 
 ```powershell
 cd contract
-aptos init --network testnet --seed-phrase "kitten shiver river cash crucial reflect jeans warm hero maximum hip cactus" --profile testnet
+aptos init --network custom --seed-phrase "kitten shiver river cash crucial reflect jeans warm hero maximum hip cactus" --profile testnet --rest-url "https://full.testnet.movementinfra.xyz/v1" --faucet-url "https://faucet.testnet.movementinfra.xyz"
 ```
 
 ## Step 3: Get Account Address
@@ -52,10 +57,10 @@ agentpay_stream = "0xYOUR_ACCOUNT_ADDRESS"
 aptos move compile --named-addresses agentpay_stream=0xYOUR_ACCOUNT_ADDRESS
 ```
 
-## Step 6: Deploy to Testnet
+## Step 6: Deploy to Movement Testnet
 
 ```powershell
-aptos move publish --named-addresses agentpay_stream=0xYOUR_ACCOUNT_ADDRESS --network testnet --profile testnet
+aptos move publish --named-addresses agentpay_stream=0xYOUR_ACCOUNT_ADDRESS --network custom --profile testnet --url "https://full.testnet.movementinfra.xyz/v1"
 ```
 
 ## Step 7: Update Environment Variables
@@ -63,10 +68,10 @@ aptos move publish --named-addresses agentpay_stream=0xYOUR_ACCOUNT_ADDRESS --ne
 Create or update `web/.env.local`:
 
 ```env
-NEXT_PUBLIC_MOVEMENT_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+# Movement Testnet Configuration
+NEXT_PUBLIC_MOVEMENT_NODE_URL=https://full.testnet.movementinfra.xyz/v1
 NEXT_PUBLIC_PRIVY_APP_ID=your-privy-app-id-here
 NEXT_PUBLIC_CONTRACT_ADDRESS=0xYOUR_ACCOUNT_ADDRESS
-NEXT_PUBLIC_CHAIN_ID=2
 ```
 
 Replace `0xYOUR_ACCOUNT_ADDRESS` with the address from Step 3.

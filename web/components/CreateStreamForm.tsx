@@ -6,13 +6,13 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { usePrivySafe } from '@/hooks/usePrivySafe';
 import { useStreamCreation } from '@/hooks/useStreamCreation';
 import { isValidAptosAddress } from '@/lib/privyToAptos';
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet';
 
 export default function CreateStreamForm() {
-  const { ready, authenticated, login } = usePrivySafe();
   const { createStreamTransaction, isLoading, error, transactionHash, reset } = useStreamCreation();
+  const { isConnected, connect, walletName } = useUnifiedWallet();
 
   const [recipientAddress, setRecipientAddress] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
@@ -51,30 +51,27 @@ export default function CreateStreamForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
-    if (!authenticated) {
-      login();
-      return;
+    if (!isConnected) {
+      if(walletName && walletName !== ''){
+        connect(walletName);
+      } else {
+        return;
+      }
     }
-
-    reset();
-    
+  
     const result = await createStreamTransaction({
       recipientAddress: recipientAddress.trim(),
       totalAmount: parseFloat(totalAmount),
       flowRate: parseFloat(flowRate),
     });
-
-    if (result.success && result.transactionHash) {
-      // Success - form will show success message
-      // Optionally reset form
-      // setRecipientAddress('');
-      // setTotalAmount('');
-      // setFlowRate('');
+  
+    if (result) {
+      // Optionally clear form or redirect user
+      setRecipientAddress('');
+      setTotalAmount('');
+      setFlowRate('');
     }
   };
 
@@ -88,7 +85,7 @@ export default function CreateStreamForm() {
     parseFloat(flowRate) > 0 &&
     parseFloat(flowRate) <= parseFloat(totalAmount);
 
-  const isSubmitDisabled = !ready || !authenticated || isLoading || !isFormValid;
+  const isSubmitDisabled = !isConnected || isLoading || !isFormValid;
 
   // Calculate duration for display
   const calculatedDuration = 
@@ -110,18 +107,11 @@ export default function CreateStreamForm() {
             Create Payment Stream
           </h2>
 
-          {!authenticated && (
-            <div className="mb-5 p-3 bg-[#0F2A3A] border border-[#00FFFF]/20 rounded-lg">
+          {!isConnected && (
+            <div className="mb-5 p-3 bg-[#0F2A3A] border border-[#00FFFF]/20 rounded-lg text-center">
               <p className="text-xs text-[#E0E0E0] mb-2">
                 Please connect your wallet to create a stream.
               </p>
-              <button
-                onClick={login}
-                className="w-full bg-[#FF6600] hover:bg-[#FF6600]/80 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg text-sm border-2"
-                style={{ borderRightWidth: '4px', borderBottomWidth: '4px', borderColor: '#00FFFF' }}
-              >
-                Connect Wallet
-              </button>
             </div>
           )}
 
@@ -150,7 +140,7 @@ export default function CreateStreamForm() {
                     ? 'border-[#FF6600]'
                     : 'border-[#1A3A4A]'
                 }`}
-                disabled={!authenticated || isLoading}
+                disabled={isLoading}
               />
               {formErrors.recipientAddress && (
                 <p className="mt-1 text-xs text-[#FF6600]">
@@ -158,7 +148,7 @@ export default function CreateStreamForm() {
                 </p>
               )}
               <p className="mt-1 text-xs text-[#A0A0A0]">
-                The Aptos address of the AI agent or service to receive payments
+                The Move address of the AI agent or service to receive payments
               </p>
             </div>
 
@@ -168,7 +158,7 @@ export default function CreateStreamForm() {
                 htmlFor="totalAmount"
                 className="block text-xs font-medium text-[#E0E0E0] mb-1.5"
               >
-                Total Amount (APT)
+                Total Amount (MOVE)
               </label>
               <input
                 type="number"
@@ -188,7 +178,7 @@ export default function CreateStreamForm() {
                     ? 'border-[#FF6600]'
                     : 'border-[#1A3A4A]'
                 }`}
-                disabled={!authenticated || isLoading}
+                disabled={isLoading}
               />
               {formErrors.totalAmount && (
                 <p className="mt-1 text-xs text-[#FF6600]">
@@ -196,7 +186,7 @@ export default function CreateStreamForm() {
                 </p>
               )}
               <p className="mt-1 text-xs text-[#A0A0A0]">
-                The total amount of APT to deposit into the stream
+                The total amount of MOVE to deposit into the stream
               </p>
             </div>
 
@@ -206,7 +196,7 @@ export default function CreateStreamForm() {
                 htmlFor="flowRate"
                 className="block text-xs font-medium text-[#E0E0E0] mb-1.5"
               >
-                Flow Rate (APT/Second)
+                Flow Rate (MOVE/Second)
               </label>
               <input
                 type="number"
@@ -226,7 +216,7 @@ export default function CreateStreamForm() {
                     ? 'border-[#FF6600]'
                     : 'border-[#1A3A4A]'
                 }`}
-                disabled={!authenticated || isLoading}
+                disabled={isLoading}
               />
               {formErrors.flowRate && (
                 <p className="mt-1 text-xs text-[#FF6600]">
@@ -259,7 +249,7 @@ export default function CreateStreamForm() {
                   Stream created successfully!
                 </p>
                 <a
-                  href={`https://explorer.aptoslabs.com/txn/${transactionHash}?network=testnet`}
+                  href={`https://explorer.movementnetwork.xyz/txn/${transactionHash}?network=testnet`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-[#00FFFF] hover:underline"
