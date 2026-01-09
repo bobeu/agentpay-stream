@@ -178,7 +178,8 @@ import { AptosClient } from 'aptos';
 import { useUnifiedWallet } from './useUnifiedWallet';
 
 // Movement Testnet RPC Endpoint
-const MOVEMENT_RPC = 'https://aptos.testnet.m1.movementlabs.xyz/v1';
+// const MOVEMENT_RPC = 'https://aptos.testnet.m1.movementlabs.xyz/v1';
+const MOVEMENT_RPC = 'https://testnet.movementnetwork.xyz/v1';
 const client = new AptosClient(MOVEMENT_RPC);
 
 export function useAccountBalance() {

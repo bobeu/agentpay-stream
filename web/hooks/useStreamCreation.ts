@@ -204,167 +204,296 @@
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+// 'use client';
+
+// import { useState, useCallback } from 'react';
+// import { useWallet } from "@aptos-labs/wallet-adapter-react";
+// import { CONTRACT_ADDRESS, aptosClient } from '@/lib/aptosClient';
+// import toast from 'react-hot-toast';
+// // import { AccountAddress } from "@aptos-labs/ts-sdk";
+
+// export interface StreamCreationParams {
+//   recipientAddress: string;
+//   totalAmount: number; // in MOVE/APT
+//   flowRate: number;    // tokens per second
+// }
+
+// export interface StreamCreationResult {
+//   success: boolean;
+//   transactionHash?: string;
+//   error?: string;
+// }
+
+// const MOVE_TO_OCTAS = 100_000_000; // 1 MOVE = 10^8 octas
+
+// export function useStreamCreation() {
+//   const { connected, signAndSubmitTransaction } = useWallet();
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
+//   const createStreamTransaction = useCallback(
+//     async (params: any) => {
+//       if (!connected) return toast.error("Please connect your wallet first!");
+
+//       setIsLoading(true);
+      
+//       // Create a promise for the toast to track
+//       const transactionPromise = (async () => {
+//         // 1. Setup Data
+//         const amountInOctas = Math.floor(params.totalAmount * 100_000_000);
+//         const flowRateInOctas = Math.floor(params.flowRate * 100_000_000);
+//         const durationSeconds = Math.floor(amountInOctas / flowRateInOctas);
+
+//         const payload = {
+//           data: {
+//             function: `${CONTRACT_ADDRESS}::agent_pay_stream::create_stream` as `${string}::${string}::${string}`,
+//             functionArguments: [params.recipientAddress, amountInOctas.toString(), durationSeconds.toString()],
+//           },
+//         };
+
+//         // 2. Request Signature (This triggers the wallet popup)
+//         const response = await signAndSubmitTransaction(payload);
+        
+//         // 3. Wait for confirmation (The 'Loading' state continues here)
+//         await aptosClient.waitForTransaction({ transactionHash: response.hash });
+        
+//         setTransactionHash(response.hash);
+//         return response.hash;
+//       })();
+
+//       // Trigger the toast notification
+//       toast.promise(transactionPromise, {
+//         loading: 'Confirming transaction on Movement...',
+//         success: (hash) => `Stream Created! Hash: ${hash.slice(0, 6)}...`,
+//         error: (err) => {
+//           console.log("Error occured", err);
+//           return err.message || 'Transaction failed';
+//         },
+//       });
+
+//       try {
+//         await transactionPromise;
+//         setIsLoading(false);
+//         return { success: true };
+//       } catch (e) {
+//         setIsLoading(false);
+//         return { success: false };
+//       }
+//     },
+//     [connected, signAndSubmitTransaction]
+//   );
+
+//   const reset = useCallback(() => {
+//     setError(null);
+//     setTransactionHash(null);
+//   }, []);
+
+//   return {
+//     createStreamTransaction,
+//     isLoading,
+//     error,
+//     transactionHash,
+//     reset,
+//     isConnected: connected,
+//   };
+// }
+
+
+//////////////////////////////////////////////////////
+
+// /**
+//  * hooks/useStreamCreation.ts
+//  */
+// 'use client';
+
+// import { useState } from 'react';
+// import { useAptosContext } from '@/context/AptosContext';
+// import { useUnifiedWallet } from '@/hooks/useUnifiedWallet';
+// import { InputTransactionData } from '@aptos-labs/wallet-adapter-react';
+
+// interface CreateStreamArgs {
+//   recipientAddress: string;
+//   totalAmount: number;
+//   flowRate: number;
+//   coinType: string;
+// }
+
+// export const useStreamCreation = () => {
+//   const { aptosClient, moduleAddress } = useAptosContext();
+//   const { signAndSubmitTransaction, isConnected } = useUnifiedWallet();
+  
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+//   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
+//   const createStreamTransaction = async ({
+//     recipientAddress,
+//     totalAmount,
+//     flowRate,
+//     coinType
+//   }: CreateStreamArgs) => {
+//     if (!isConnected) {
+//       setError("Wallet not connected");
+//       return null;
+//     }
+
+//     setIsLoading(true);
+//     setError(null);
+//     setTransactionHash(null);
+
+//     try {
+//       // 1. Calculate duration and handle decimals (assuming 8 for MOVE/Octas)
+//       // Note: In production, fetch decimals dynamically from TokenSelect config
+//       const decimals = coinType.includes('aptos_coin') ? 8 : 6;
+//       const amountInOnChainUnits = Math.floor(totalAmount * Math.pow(10, decimals));
+      
+//       // Calculate duration in seconds
+//       const durationSeconds = Math.floor(totalAmount / flowRate);
+
+//       // 2. Build the Payload for the Generic Move Call
+//       const transaction: InputTransactionData = {
+//         data: {
+//           function: `${moduleAddress}::agent_pay_stream::create_stream`,
+//           typeArguments: [coinType], // The generic <T>
+//           functionArguments: [
+//             recipientAddress,
+//             amountInOnChainUnits.toString(),
+//             durationSeconds.toString()
+//           ],
+//         },
+//       };
+
+//       // 3. Submit through the Unified Wallet
+//       const response = await signAndSubmitTransaction(transaction);
+      
+//       // 4. Wait for transaction validation
+//       await aptosClient.waitForTransaction({ transactionHash: response.hash });
+      
+//       setTransactionHash(response.hash);
+//       return response.hash;
+//     } catch (err: any) {
+//       console.error("Transaction Error:", err);
+//       setError(err.message || "Failed to initiate stream");
+//       return null;
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   return {
+//     createStreamTransaction,
+//     isLoading,
+//     error,
+//     transactionHash,
+//     reset: () => {
+//       setError(null);
+//       setTransactionHash(null);
+//     }
+//   };
+// };
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * hooks/useStreamCreation.ts
+ */
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { CONTRACT_ADDRESS, aptosClient } from '@/lib/aptosClient';
-import toast from 'react-hot-toast';
-// import { AccountAddress } from "@aptos-labs/ts-sdk";
+import { useState } from 'react';
+import { useAptosContext } from '@/context/AptosContext';
+import { useUnifiedWallet } from '@/hooks/useUnifiedWallet';
+import { InputTransactionData } from '@aptos-labs/wallet-adapter-react';
+import { MoveCoinType } from '@/components/TokenSelect'; // Import the type we created
 
-export interface StreamCreationParams {
+interface CreateStreamArgs {
   recipientAddress: string;
-  totalAmount: number; // in MOVE/APT
-  flowRate: number;    // tokens per second
+  totalAmount: number; // Expecting pre-calculated atomic units (integer)
+  flowRate: number;    // Expecting pre-calculated atomic units (integer)
+  coinType: MoveCoinType;
 }
 
-export interface StreamCreationResult {
-  success: boolean;
-  transactionHash?: string;
-  error?: string;
-}
-
-const MOVE_TO_OCTAS = 100_000_000; // 1 MOVE = 10^8 octas
-
-export function useStreamCreation() {
-  const { connected, signAndSubmitTransaction } = useWallet();
+export const useStreamCreation = () => {
+  const { aptosClient, moduleAddress } = useAptosContext();
+  const { signAndSubmitTransaction, isConnected } = useUnifiedWallet();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  // const createStreamTransaction = useCallback(
-  //   async (params: StreamCreationParams): Promise<StreamCreationResult> => {
-  //     // 1. Initial Validations
-  //     if (!connected) {
-  //       const msg = 'Wallet not connected';
-  //       setError(msg);
-  //       return { success: false, error: msg };
-  //     }
+  const createStreamTransaction = async ({
+    recipientAddress,
+    totalAmount,
+    flowRate,
+    coinType
+  }: CreateStreamArgs) => {
+    if (!isConnected) {
+      setError("Wallet not connected");
+      return null;
+    }
 
-  //     if (!CONTRACT_ADDRESS) {
-  //       const msg = 'Contract address not configured';
-  //       setError(msg);
-  //       return { success: false, error: msg };
-  //     }
-
-  //     setIsLoading(true);
-  //     setError(null);
-  //     setTransactionHash(null);
-
-  //     try {
-  //       // 2. Calculation Logic
-  //       const amountInOctas = Math.floor(params.totalAmount * MOVE_TO_OCTAS);
-  //       const flowRateInOctas = Math.floor(params.flowRate * MOVE_TO_OCTAS);
-        
-  //       // duration = total_amount / flow_rate
-  //       const durationSeconds = Math.floor(amountInOctas / flowRateInOctas);
-
-  //       if (durationSeconds <= 0) {
-  //         throw new Error('Flow rate is too high for this amount.');
-  //       }
-
-  //       // 3. Build the Transaction Payload
-  //       // We use the Entry Function payload format compatible with the Wallet Adapter
-  //       const payload = {
-  //         data: {
-  //           function: `${CONTRACT_ADDRESS}::agent_pay_stream::create_stream` as `${string}::${string}::${string}`,
-  //           functionArguments: [
-  //             params.recipientAddress, // Recipient address string
-  //             amountInOctas.toString(), // Amount as string/uint64
-  //             durationSeconds.toString() // Duration as string/uint64
-  //           ],
-  //         },
-  //       };
-
-  //       // 4. Sign and Submit
-  //       // The wallet adapter handles the signing UI and submission to the Movement network
-  //       const response = await signAndSubmitTransaction(payload);
-
-  //       // 5. Wait for Transaction Confirmation
-  //       // Using the aptosClient (Movement RPC) configured in your libs
-  //       await aptosClient.waitForTransaction({ transactionHash: response.hash });
-
-  //       setTransactionHash(response.hash);
-  //       return {
-  //         success: true,
-  //         transactionHash: response.hash,
-  //       };
-
-  //     } catch (err: any) {
-  //       console.error("Stream Creation Error:", err);
-  //       const errorMsg = err.message || 'Transaction failed or was cancelled';
-  //       setError(errorMsg);
-  //       return { success: false, error: errorMsg };
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   },
-  //   [connected, signAndSubmitTransaction]
-  // );
-
-  const createStreamTransaction = useCallback(
-    async (params: any) => {
-      if (!connected) return toast.error("Please connect your wallet first!");
-
-      setIsLoading(true);
-      
-      // Create a promise for the toast to track
-      const transactionPromise = (async () => {
-        // 1. Setup Data
-        const amountInOctas = Math.floor(params.totalAmount * 100_000_000);
-        const flowRateInOctas = Math.floor(params.flowRate * 100_000_000);
-        const durationSeconds = Math.floor(amountInOctas / flowRateInOctas);
-
-        const payload = {
-          data: {
-            function: `${CONTRACT_ADDRESS}::agent_pay_stream::create_stream` as `${string}::${string}::${string}`,
-            functionArguments: [params.recipientAddress, amountInOctas.toString(), durationSeconds.toString()],
-          },
-        };
-
-        // 2. Request Signature (This triggers the wallet popup)
-        const response = await signAndSubmitTransaction(payload);
-        
-        // 3. Wait for confirmation (The 'Loading' state continues here)
-        await aptosClient.waitForTransaction({ transactionHash: response.hash });
-        
-        setTransactionHash(response.hash);
-        return response.hash;
-      })();
-
-      // Trigger the toast notification
-      toast.promise(transactionPromise, {
-        loading: 'Confirming transaction on Movement...',
-        success: (hash) => `Stream Created! Hash: ${hash.slice(0, 6)}...`,
-        error: (err) => {
-          console.log("Error occured", err);
-          return err.message || 'Transaction failed';
-        },
-      });
-
-      try {
-        await transactionPromise;
-        setIsLoading(false);
-        return { success: true };
-      } catch (e) {
-        setIsLoading(false);
-        return { success: false };
-      }
-    },
-    [connected, signAndSubmitTransaction]
-  );
-
-  const reset = useCallback(() => {
+    setIsLoading(true);
     setError(null);
     setTransactionHash(null);
-  }, []);
+
+    try {
+      // 1. Calculate duration in seconds
+      // amount / rate = duration (e.g., 100 MOVE / 1 MOVE per sec = 100 seconds)
+      const durationSeconds = Math.floor(totalAmount / flowRate);
+
+      // 2. Build the Payload for the Generic Move Call
+      const transaction: InputTransactionData = {
+        data: {
+          // Explicitly cast function string to satisfy SDK V2 type requirements
+          function: `${moduleAddress}::agent_pay_stream::create_stream` as `${string}::${string}::${string}`,
+          typeArguments: [coinType], 
+          functionArguments: [
+            recipientAddress,
+            totalAmount.toString(),
+            durationSeconds.toString()
+          ],
+        },
+      };
+
+      // 3. Submit through the Unified Wallet
+      const response = await signAndSubmitTransaction(transaction);
+      
+      // 4. Wait for transaction validation
+      // This ensures the stream is indexed by the network before we update the UI
+      await aptosClient.waitForTransaction({ transactionHash: response.hash });
+      
+      setTransactionHash(response.hash);
+      return response.hash;
+    } catch (err: any) {
+      console.error("Transaction Error:", err);
+      // Clean up common error messages from the wallet
+      const cleanError = err.message?.includes('User Rejected') 
+        ? "Transaction cancelled by user" 
+        : err.message || "Failed to initiate stream";
+      
+      setError(cleanError);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return {
     createStreamTransaction,
     isLoading,
     error,
     transactionHash,
-    reset,
-    isConnected: connected,
+    reset: () => {
+      setError(null);
+      setTransactionHash(null);
+    }
   };
-}
+};

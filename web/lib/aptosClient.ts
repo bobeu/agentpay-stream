@@ -4,7 +4,8 @@ import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
 const MOVEMENT_CONFIGS = {
   testnet: {
     chainId: 250, // Movement Testnet (Bardock) Chain ID
-    fullnode: 'https://full.testnet.movementinfra.xyz/v1',
+    fullnode: 'https://testnet.movementnetwork.xyz/v1',
+    // fullnode: 'https://full.testnet.movementinfra.xyz/v1',
   },
   mainnet: {
     chainId: 126, // Movement Mainnet Chain ID
@@ -22,7 +23,7 @@ function getMovementConfig() {
       fullnode: MOVEMENT_CONFIGS.mainnet.fullnode,
       chainId: MOVEMENT_CONFIGS.mainnet.chainId,
     };
-  } else if (nodeUrl.includes('testnet.movementinfra.xyz') || nodeUrl.includes('testnet')) {
+  } else if (nodeUrl.includes('testnet.movementnetwork.xyz') || nodeUrl.includes('testnet')) {
     return {
       network: Network.CUSTOM,
       fullnode: MOVEMENT_CONFIGS.testnet.fullnode,
@@ -66,7 +67,7 @@ export const MOVEMENT_NETWORK_INFO = {
     url: MOVEMENT_CONFIGS.mainnet.fullnode,
   },
 };
-
+// https://testnet.movementnetwork.xyz/v1
 // Get current network info based on environment
 export function getCurrentMovementNetwork() {
   const nodeUrl = process.env.NEXT_PUBLIC_MOVEMENT_NODE_URL || MOVEMENT_CONFIGS.testnet.fullnode;

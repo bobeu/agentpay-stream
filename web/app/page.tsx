@@ -1,77 +1,167 @@
-// app/page.tsx
+/**
+ * app/page.tsx
+ */
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useStreamData } from '@/hooks/useStreamData';
 import { DUMMY_STREAMS } from '@/lib/dummyData';
 import CreateStreamForm from '@/components/CreateStreamForm';
 import StreamDashboard from '@/components/StreamDashboard';
 import StreamHistory from '@/components/StreamHistory';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
-import React from 'react';
+import { Loader2, Zap } from 'lucide-react';
 
 export default function Home() {
-  const { connected } = useWallet();
-  const { streams, isLoading, aptosAddress } = useStreamData();
-  const [ mounted, setMount ] = React.useState<boolean>(false);
+  const { connected, account } = useWallet();
+  const { streams, isLoading } = useStreamData();
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
-    setMount(true);
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
-  // 1. Loading State
-  if (!mounted) {
+  if (!mounted) return null;
+
+  if (isLoading && connected) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0F2A3A]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00FFFF]"></div>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-[#00FFFF] mb-4" />
+        <p className="text-[#00FFFF] font-mono text-xs tracking-[0.2em] uppercase animate-pulse">
+          Syncing with Movement L1...
+        </p>
       </div>
     );
   }
 
-  // 2. Scenario: Connected but NO streams found -> Centered Form Only
-  if (connected && streams.length === 0) {
-    return (
-      <div className="min-h-screen bg-[#0F2A3A] py-12 px-4 flex items-center justify-center">
-        <div className="w-full max-w-2xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Start Your First Stream</h1>
-            <p className="text-[#A0A0A0] text-sm">No active streams detected for this wallet.</p>
-          </div>
-          <CreateStreamForm />
-        </div>
-      </div>
-    );
-  }
-
-  // 3. Scenario: Not Connected (Show Dummies) OR Connected with Real Streams
-  const displayStreams = connected ? streams : DUMMY_STREAMS;
-  const isShowingDummy = !connected;
+  const displayStreams = (connected && streams.length > 0) ? streams : DUMMY_STREAMS;
+  const isShowingDummy = !connected || streams.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#0F2A3A] py-12 px-4">
+    <div className="min-h-screen py-12 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto space-y-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 items-start">
-          
-          <div className="sticky top-8">
-            <CreateStreamForm />
+        
+        {/* Welcome Banner (Visible if no real streams) */}
+        {isShowingDummy && (
+          <div className="relative overflow-hidden rounded-2xl bg-[#0A1F2E] border border-[#00FFFF]/20 p-8 mb-8">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+              <Zap className="w-32 h-32 text-[#00FFFF]" />
+            </div>
+            <div className="relative z-10">
+              <h1 className="text-4xl font-black text-white uppercase italic tracking-tighter mb-2">
+                AgentPay <span className="text-[#00FFFF]">Stream</span>
+              </h1>
+              <p className="text-[#A0A0A0] max-w-xl">
+                The protocol for continuous, real-time value transfer. Connect your wallet to transition from 
+                <span className="text-[#FF6600] font-bold"> Preview Mode </span> to live mainnet streaming.
+              </p>
+            </div>
           </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-10 items-start">
+          <aside className="lg:sticky lg:top-24">
+            <CreateStreamForm />
+          </aside>
   
-          {/* This now works perfectly without TS errors */}
-          <StreamDashboard 
-            streams={displayStreams} 
-            isDummy={isShowingDummy} 
-          />
+          <section className="space-y-12">
+            <StreamDashboard 
+              streams={displayStreams} 
+              isDummy={isShowingDummy} 
+            />
+            
+            <StreamHistory 
+              streams={displayStreams} 
+              userAddress={account?.address?.toString() || '0x0'} 
+              isDummy={isShowingDummy} 
+            />
+          </section>
         </div>
-  
-        {/* History remains at the bottom */}
-        <StreamHistory 
-          streams={displayStreams} 
-          userAddress={aptosAddress || '0x0'} 
-          isDummy={isShowingDummy} 
-        />
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+// // app/page.tsx
+// 'use client';
+
+// import { useStreamData } from '@/hooks/useStreamData';
+// import { DUMMY_STREAMS } from '@/lib/dummyData';
+// import CreateStreamForm from '@/components/CreateStreamForm';
+// import StreamDashboard from '@/components/StreamDashboard';
+// import StreamHistory from '@/components/StreamHistory';
+// import { useWallet } from '@aptos-labs/wallet-adapter-react';
+// import React from 'react';
+
+// export default function Home() {
+//   const { connected, account } = useWallet();
+//   const { streams, isLoading } = useStreamData();
+//   const [ mounted, setMount ] = React.useState<boolean>(false);
+//   const aptosAddress = account?.address.toString();
+
+//   React.useEffect(() => {
+//     setMount(true);
+//   }, []);
+
+//   // 1. Loading State
+//   if (!mounted) {
+//     return (
+//       <div className="flex min-h-screen items-center justify-center bg-[#0F2A3A]">
+//         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00FFFF]"></div>
+//       </div>
+//     );
+//   }
+
+//   // 2. Scenario: Connected but NO streams found -> Centered Form Only
+//   if (connected && streams.length === 0) {
+//     return (
+//       <div className="min-h-screen bg-[#0F2A3A] py-12 px-4 flex items-center justify-center">
+//         <div className="w-full max-w-2xl">
+//           <div className="text-center mb-8">
+//             <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Start Your First Stream</h1>
+//             <p className="text-[#A0A0A0] text-sm">No active streams detected for this wallet.</p>
+//           </div>
+//           <CreateStreamForm />
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   // 3. Scenario: Not Connected (Show Dummies) OR Connected with Real Streams
+//   const displayStreams = connected ? streams : DUMMY_STREAMS;
+//   const isShowingDummy = !connected;
+
+//   return (
+//     <div className="min-h-screen bg-[#0F2A3A] py-12 px-4">
+//       <div className="max-w-7xl mx-auto space-y-12">
+//         <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 items-start">
+          
+//           <div className="sticky top-8">
+//             <CreateStreamForm />
+//           </div>
+  
+//           {/* This now works perfectly without TS errors */}
+//           <StreamDashboard 
+//             streams={displayStreams} 
+//             isDummy={isShowingDummy} 
+//           />
+//         </div>
+  
+//         {/* History remains at the bottom */}
+//         <StreamHistory 
+//           streams={displayStreams} 
+//           userAddress={aptosAddress || '0x0'} 
+//           isDummy={isShowingDummy} 
+//         />
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
