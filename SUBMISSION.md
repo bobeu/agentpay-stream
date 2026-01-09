@@ -204,7 +204,7 @@ AgentPay Stream introduces **micro-streaming payments** - a paradigm where funds
 
 3. **Deployment**:
    - Published contract to Aptos Testnet
-   - Captured deployment address: `0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff`
+   - Captured deployment address: `0x1a04c8ca4ec3c4acc3214e544d7fcfa8b1ca471c649fa562f44bea22572fdfb9`
    - Updated `Move.toml` and `web/.env.local` with contract address
 
 **Challenges & Solutions**:

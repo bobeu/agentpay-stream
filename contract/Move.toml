@@ -1,22 +1,16 @@
 [package]
-name = "AgentPayStream"
+name = "agentpay-stream"
 version = "1.0.0"
+authors = []
 
 [addresses]
-agentpay_stream = "0x2c8f0d41b9fb474cfc59378a695eb74d3e4507d7107cad3fe47cea61caaa770d"
+agentpay_addr = "0x1a04c8ca4ec3c4acc3214e544d7fcfa8b1ca471c649fa562f44bea22572fdfb9"
+
+[dev-addresses]
 
 [dependencies.AptosFramework]
-git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "aptos-node-v1.11.0"
+git = "https://github.com/movementlabsxyz/aptos-core.git"
+rev = "movement"
 subdir = "aptos-move/framework/aptos-framework"
 
-[dependencies.AptosStdlib]
-git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "aptos-node-v1.11.0"
-subdir = "aptos-move/framework/aptos-stdlib"
-
-[dependencies.AptosToken]
-git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "aptos-node-v1.11.0"
-subdir = "aptos-move/framework/aptos-token"
-
+[dev-dependencies]
