@@ -427,7 +427,7 @@ import { Activity, ArrowUpRight, Clock } from 'lucide-react';
 interface StreamCardProps {
   stream: {
     amount: string;
-    withdrawn: string;
+    withdrawn?: string;
     start_time: string;
     end_time: string;
     recipient: string;
