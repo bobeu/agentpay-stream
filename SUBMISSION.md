@@ -52,7 +52,8 @@ AgentPay Stream is designed as a sustainable protocol with a triple-stream reven
 ---
 
 ## Deployment Data
-- **Contract Address**: `0x0aa1dd24263b325205d18478737d6c15adcf439e688b0cce01176583eb9759ff`
+- **Contract Address**: `0x1a04c8ca4ec3c4acc3214e544d7fcfa8b1ca471c649fa562f44bea22572fdfb9`
+- **Explorer**: `https://explorer.movementnetwork.xyz/account/0x1a04c8ca4ec3c4acc3214e544d7fcfa8b1ca471c649fa562f44bea22572fdfb9?network=bardock+testnet`
 - **Network**: Movement L1 Testnet
 - **Key Features**: Stream Creation, Real-time Counter, Partial Withdrawals, and Instant Cancellation.
 
