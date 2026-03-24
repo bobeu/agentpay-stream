@@ -49,8 +49,8 @@ export default function StreamDashboard({ streams, isDummy }: StreamDashboardPro
           <StreamCard
             key={`${stream.sender}-${stream.stream_id}`}
             stream={stream}
-            userAddress={stream.sender}
-            isDummy={isDummy}
+            // userAddress={stream.sender}
+            // isDummy={isDummy}
           />
         ))}
       </div>
