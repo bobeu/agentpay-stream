@@ -80,5 +80,3 @@ export function getCurrentMovementNetwork() {
 
 // Contract address from environment
 export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '';
-
-// 31636dd4bce33196896c70ee3dbfc459d38c36d2e33dc4a9e0effb86acb8e20c
